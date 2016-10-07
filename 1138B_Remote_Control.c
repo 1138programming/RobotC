@@ -28,16 +28,22 @@ task main()
 		motor[backLeft] = threshold(vexRT[Ch3]);
 
 		// Strafing
-		while(vexRT[Btn6U] == 1)
-		{
-			motor[frontLeft] = motor[backRight] = 127;
-			motor[frontRight] = motor[backLeft] = -127;
+		if (vexRT[Btn6U] == 1) {
+			while(vexRT[Btn6U] == 1)
+			{
+				motor[frontLeft] = motor[backRight] = 127;
+				motor[frontRight] = motor[backLeft] = -127;
+			}
+			motor[frontLeft] = motor[backRight] = motor[frontRight] = motor[backLeft] = 0;
 		}
-
-		while(vexRT[Btn5U] == 1)
+		if (vexRT[Btn5U] == 1)
 		{
-			motor[frontLeft] = motor[backRight] = -127;
-			motor[frontRight] = motor[backLeft] = 127;
+			while(vexRT[Btn5U] == 1)
+			{
+				motor[frontLeft] = motor[backRight] = -127;
+				motor[frontRight] = motor[backLeft] = 127;
+			}
+			motor[frontLeft] = motor[backRight] = motor[frontRight] = motor[backLeft] = 0;
 		}
 
 		// Collector
