@@ -66,9 +66,13 @@ task main()
 		motor[liftRight] = threshold(vexRT[Ch3Xmtr2]);
 
 		//laucher
-		while(vexRT[Btn5DXmtr2] == 1)
+		if (vexRT[Btn5DXmtr2] == 1)
 		{
-			motor[laucher] = 127;
+			while(vexRT[Btn5DXmtr2] == 1)
+			{
+				motor[laucher] = 127;
+			}
+			motor[launcher] = 0;
 		}
 	}
 }
