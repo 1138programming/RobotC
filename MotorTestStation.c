@@ -1,6 +1,7 @@
 #pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, dgtl1,  button,         sensorTouch)
 #pragma config(Sensor, dgtl2,  encoder,        sensorQuadEncoder)
+#pragma config(Sensor, dgtl6,  LED4,           sensorLEDtoVCC)
 #pragma config(Sensor, dgtl8,  LED3,           sensorLEDtoVCC)
 #pragma config(Sensor, dgtl10, LED2,           sensorLEDtoVCC)
 #pragma config(Sensor, dgtl12, LED,            sensorLEDtoVCC)
@@ -14,6 +15,7 @@ bool buttonPressed = false;
 int iterations = 5;
 float rpsReadings[5] = {0, 0, 0, 0, 0};
 string type = "";
+string IME = "";
 
 void average() {
 	rps = 0;
@@ -38,6 +40,7 @@ task main()
 {
 	clearTimer(T1);
 	clearTimer(T2);
+	resetMotorEncoder(port1);
 	while(true)
 	{
 		//Sets a boolean to one if the button is pressed or zero if it is not pressed
@@ -54,7 +57,7 @@ task main()
 			clearTimer(T1);
 			buttonPressed = false;
 			SensorValue(encoder) = 0;
-		}	else if(!buttonPressed && iterations >= 5) {
+			}	else if(!buttonPressed && iterations >= 5) {
 			motor[TestMotor] = 0;
 			buttonPressed = false;
 			if(iterations == 5)
@@ -70,27 +73,28 @@ task main()
 			SensorValue(encoder) = 0;
 		}
 
-		//flashLight();
-		if(rps <= 799)
-		{
-			turnLEDOn(dgtl12);
-			turnLEDOff(dgtl10);
-			turnLEDOff(dgtl8);
-		} else if(rps >= 800 & rps <= 1299)
-		{
-			turnLEDOff(dgtl12);
-			turnLEDOn(dgtl10);
-			turnLEDOff(dgtl8);
-		} else if(rps >= 1300)
-		{
-			turnLEDOff(dgtl12);
-			turnLEDOff(dgtl10);
-			turnLEDOn(dgtl8);
-		} else
-		{
-			turnLEDOff(dgtl12);
-			turnLEDOff(dgtl10);
-			turnLEDOff(dgtl8);
-		}
+		if(rps > 0 && rps <= 799)
+			type = "Torque";
+		else if(rps >= 800 & rps <= 1199)
+			type = "Speed";
+		else if(rps >= 1200)
+			type = "Turbo";
+		else
+			type = "NA";
+	
+	if(getMotorEncoder(port1) > 0)
+	{	
+		IME = "Encoder";
+	}
+	else
+	{
+		IME = "No encoder";	
+	}
+		clearLCDLine(0);                      
+  	clearLCDLine(1);
+  	displayLCDPos(0, 0);
+		displayNextLCDString(type);
+		displayLCDPos(1, 0);
+		displayNextLCDString(IME);	
 	}
 }
