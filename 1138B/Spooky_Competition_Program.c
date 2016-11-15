@@ -4,7 +4,7 @@
 #pragma config(Motor,  port4,           collectorRight, tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port5,           liftLeft2,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port6,           liftRight1,    tmotorVex393_MC29, openLoop, reversed)
-#pragma config(Motor,  port7,           collectorLeft, tmotorVex393_MC29, openLoop, reversed)
+#pragma config(Motor,  port7,           collectorLeft, tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port8,           liftRight2,    tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port9,           frontRight,    tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port10,          backRight,     tmotorVex393_HBridge, openLoop, reversed)
@@ -68,12 +68,13 @@ task autonomous()
 	base(127, 127, 2000);
 	base(0, 0, 500);
 	//base(-127, -127, 700);
-	//claw(-127, 700);
-	//base(-127, -127, 500);
-	//base(0, 0, 500);
-	//claw(127, 1000);
-	//base(127, 127, 800);
-	//base(0, 0, 500);
+	//lift(100, 1100);
+	//base(127, -127, 500);
+	//base(127, 127, 700);
+	//claw(127, 500);
+	//lift(127, 1000);
+	//base(127, 127, 500);
+	//claw(-127, 500);
 }
 /*-----------------------------Autonomouse ends here----------------------------------*/
 
@@ -94,43 +95,20 @@ task usercontrol()
 		motor[liftLeft2] = threshold(vexRT[Ch3Xmtr2]);
 		motor[liftRight2] = threshold(vexRT[Ch3Xmtr2]);
 		//collector
-		if(vexRT[Btn8UXmtr2] == 1)//if button 8U is pressed
+		if(vexRT[Btn6UXmtr2] == 1)//if button 8U is pressed
 		{
 			motor[collectorLeft] = 127;//open the claw
 			motor[collectorRight] = 127;
 		}
-		else if(vexRT[Btn8DXmtr2] == 1)//if button 8D is pressed
+		else if(vexRT[Btn6DXmtr2] == 1)//if button 8D is pressed
 		{
 			motor[collectorLeft] = -127;//close the claw
 			motor[collectorRight] = -127;
 		}
 		else//if nothing is pressed, run the folowing program
 		{
-				if(vexRT[Btn5UXmtr2] == 1)//if button 5U is pressed
-				{
-					motor[collectorLeft] = 127;//left collector open
-				}
-				else if(vexRT[Btn5DXmtr2] == 1)//if button 5D is pressed
-				{
-					motor[collectorLeft] = -127;//left collector close
-				}
-				else//if nothing is pressed
-				{
-					motor[collectorLeft] = 0;//stop left collector
-				}
-
-				if(vexRT[Btn6UXmtr2] == 1)//if button 6U is pressed
-				{
-					motor[collectorRight] = 127;//collector right open
-				}
-				else if (vexRT[Btn6DXmtr2] == 1)//if button 6D is pressed
-				{
-					motor[collectorRight] = -127;//collector right close
-				}
-				else//if nothing is press
-				{
-					motor[collectorRight] = 0;//stop right collector
-				}
+			motor[collectorLeft] = 0;
+			motor[collectorRight] = 0;
 		}
 		//base
 		motor[backLeft] = vexRT[Ch3] + vexRT[Ch1];//Ch3: move all six motors on the base forward or backwards
