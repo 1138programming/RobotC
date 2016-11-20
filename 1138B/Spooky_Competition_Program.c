@@ -1,10 +1,10 @@
-#pragma config(Motor,  port1,           backLeft,      tmotorVex393_HBridge, openLoop, reversed)
+#pragma config(Motor,  port1,           backLeft,      tmotorVex393_HBridge, openLoop)
 #pragma config(Motor,  port2,           frontLeft,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port3,           liftLeft1,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           collectorRight, tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port5,           liftLeft2,     tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port6,           liftRight1,    tmotorVex393_MC29, openLoop, reversed)
-#pragma config(Motor,  port7,           collectorLeft, tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port7,           collectorLeft, tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port8,           liftRight2,    tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port9,           frontRight,    tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port10,          backRight,     tmotorVex393_HBridge, openLoop, reversed)
@@ -90,7 +90,8 @@ void pre_auton()
 				waitForRelease();
 				count++;
 				} else if(nLCDButtons == centerButton) {
-				startTask(usercontrol);
+				autonNumber = 0;
+				startTask(autonomous);
 			}
 			break;
 		case 1:
@@ -109,7 +110,7 @@ void pre_auton()
 				waitForRelease();
 				count++;
 				} else if(nLCDButtons == centerButton) {
-				autonNumber = 0;
+				autonNumber = 1;
 				startTask(autonomous);
 			}
 			break;
@@ -129,7 +130,7 @@ void pre_auton()
 				waitForRelease();
 				count++;
 				} else if(nLCDButtons == centerButton) {
-				autonNumber = 1;
+				autonNumber = 2;
 				startTask(autonomous);
 			}
 			break;
@@ -149,7 +150,7 @@ void pre_auton()
 				waitForRelease();
 				count = 0;
 				} else if(nLCDButtons == centerButton) {
-				autonNumber = 2;
+				autonNumber = 3;
 				startTask(autonomous);
 			}
 			break;
@@ -188,50 +189,99 @@ void lift(int speed, int time)//lift function
 
 void claw(int speed, int time)//claw function
 {
-	motor[collectorLeft] = speed;
-	motor[collectorRight] = speed;
+	motor[collectorLeft] = -speed;
+	motor[collectorRight] = -speed;
 	wait1Msec(time);
 	motor[collectorLeft] = 0;
 	motor[collectorRight] = 0;
 }
 
+void holding(int speed, int lift, int time)
+{
+	motor[collectorLeft] = -speed;
+	motor[collectorRight] = -speed;
+	motor[liftLeft1] = lift;
+	motor[liftLeft2] = lift;
+	motor[liftRight1] = lift;
+	motor[liftRight2] = lift;
+	wait1Msec(time);
+}
 task autonomous()
 {
 	switch(autonNumber) {
 	case 0://First Autonomous
-		while(true)
-		{
 			clearLCDLine(0);
 			displayLCDCenteredString(0, "Auton 1 Selected");
-			lift(100, 100);
-			claw(127, 100);
-			lift(100, 1200);
-			claw(127, 200);
-			base(127, 127, 2000);
-			base(0, 0, 500);
-			//base(-127, -127, 700);
-			//lift(100, 1100);
-			//base(127, -127, 500);
-			//base(127, 127, 700);
-			//claw(127, 500);
-			//lift(127, 1000);
-			//base(127, 127, 500);
-			//claw(-127, 500);
-		}
+			lift(100, 1000);
+			wait1Msec(100);
+			claw(-127, 500);
+			wait1Msec(100);
+			base(50, 50, 3000);
+			wait1Msec(200);
+			base(-100, -100, 250);
+			wait1Msec(500);
 		break;
 	case 1://Second Autonomous
-		while(true)
-		{
 			clearLCDLine(0);
 			displayLCDCenteredString(0, "Auton 2 Selected");
-		}
+			lift(100, 1000);
+			wait1Msec(100);
+			claw(-127, 500);
+			wait1Msec(100);
+			base(50, 50, 3000);
+			wait1Msec(200);
+			base(-100, -100, 250);
+			wait1Msec(500);
+			base(-127, -127, 500);
+			wait1Msec(100);
+			base(-127, 127, 450);
+			wait1Msec(100);
+			lift(-100, 1000);
+			wait1Msec(100);
+			base(127, 127, 700);
+			wait1Msec(100);
+			claw(127, 900);//holding
+			holding(50, 127, 1000);
+			base(127, 127, 300);//new code
+			base(127, -127, 450);
+			wait1Msec(100);
+			base(127, 127, 900);
+			wait1Msec(100);
+			claw(-127, 500);
+			wait1Msec(100);
+			base(-127, -127, 500);
+			wait1Msec(100);
 		break;
 	case 2://Third Autonomous
-		while(true)
-		{
 			clearLCDLine(0);
 			displayLCDCenteredString(0, "Auton 3 Selected");
-		}
+			lift(100, 1000);
+			wait1Msec(100);
+			claw(-127, 500);
+			wait1Msec(100);
+			base(50, 50, 3000);
+			wait1Msec(200);
+			base(-100, -100, 250);
+			wait1Msec(500);
+			base(-127, -127, 500);
+			wait1Msec(100);
+			base(127, -127, 450);
+			wait1Msec(100);
+			lift(-100, 1000);
+			wait1Msec(100);
+			base(127, 127, 700);
+			wait1Msec(100);
+			claw(127, 900);//holding
+			holding(50, 127, 1000);
+			base(127, 127, 300);//new code
+			base(-127, 127, 450);
+			wait1Msec(100);
+			base(127, 127, 900);
+			wait1Msec(100);
+			claw(-127, 500);
+			wait1Msec(100);
+			base(-127, -127, 500);
+			wait1Msec(100);
 		break;
 	case 3:
 		while(true)
@@ -276,10 +326,14 @@ task usercontrol()
 			motor[collectorRight] = 0;
 		}
 		//base
-		motor[backLeft] = vexRT[Ch3] + vexRT[Ch1];//Ch3: move all six motors on the base forward or backwards
-		motor[backRight] = vexRT[Ch3] - vexRT[Ch1];//Ch1: make the base turn left or right
-		motor[frontLeft] = vexRT[Ch3] + vexRT[Ch1];//Ch3/Ch1: one side disable, another side can still turn
-		motor[frontRight] = vexRT[Ch3] - vexRT[Ch1];
+		//motor[backLeft] = vexRT[Ch3] + vexRT[Ch1];//Ch3: move all six motors on the base forward or backwards
+		//motor[backRight] = vexRT[Ch3] - vexRT[Ch1];//Ch1: make the base turn left or right
+		//motor[frontLeft] = vexRT[Ch3] + vexRT[Ch1];//Ch3/Ch1: one side disable, another side can still turn
+		//motor[frontRight] = vexRT[Ch3] - vexRT[Ch1];
+		motor[backLeft] = vexRT[Ch3];
+		motor[backRight] = vexRT[Ch2];
+		motor[frontLeft] = vexRT[Ch3];
+		motor[frontRight] = vexRT[Ch2];
 		UserControlCodePlaceholderForTesting();
 	}
 }
