@@ -54,10 +54,11 @@ int mode3()
 
 task main()
 {
-	int mode1button = Btn7L;
-	int mode2button = Btn7U;
-	int mode3button = Btn7R;
-	int restartbutton = Btn7D;
+	int mode1button = Btn7L; // Button for mode 1
+	int mode2button = Btn7U; // Button for mode 2
+	int mode3button = Btn7R; // Button for mode 3
+	int restartbutton = Btn7D; // Button to restart after bumper
+	int errortime = 1000; // 1000 mSecs to wait after error. Useful for debugging.
 	clearTimer(T1); // Why weren't timers used in the first place? You can clean up so many kludges with this...
 	clearLCDLine(0);
 	clearLCDLine(1);
@@ -85,22 +86,35 @@ task main()
 			break;
 		}
 	}
+	int ret;
+	string errorcode;
 	while(true)
 	{
 		if(running)
 		{
 			if (mode == 1)
 			{
-				mode1();
+				ret = mode1();
 			}
 			else if (mode == 2)
 			{
-				mode2();
+				ret = mode2();
 			}
 			else if (mode == 3)
 			{
-				mode3();
+				ret = mode3();
 			}
+			if (ret != 0)
+		  {
+		  		clearLCDLine(0);
+					clearLCDLine(1);
+					displayLCDPos(0, 0);
+					displayNextLCDString("Error code:");
+					displayLCDPos(1, 0);
+					sprintf(errorcode,"%f",ret);
+					displayNextLCDString(errorcode);
+					wait1Msec(errortime);
+		  }
 			if (vexRT[mode1button])
 			{
 				mode = 1;
