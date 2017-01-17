@@ -11,12 +11,6 @@ string credits1 = "By Crow, Bridge,";
 string credits2 = "& AA. To /zero.";
 // Code Refactoring by Wolf
 
-
-/*
-7 = Controls initial modes l=1,U=2,R=3, then 8 to change mode, leave it alone for ~10 sec, setting 1
-
-*/
-
 // You may ask why this is an int... This is because this will allow for error reporting as shown below:
 /*
 if (errorcondition)
