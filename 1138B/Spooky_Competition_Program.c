@@ -36,9 +36,12 @@ task autonomous()
 	case 0://First Autonomous
 		clearLCDLine(0);
 		displayLCDCenteredString(0, "Auton 1 Selected");
-		lift(100, 1000);
+		//threestar(55, 55, -50, 1550);
+		//wait1Msec(100);
+		//threestar(0, 0, 0, 1);
+		lift(100, 1150);
 		wait1Msec(100);
-		claw(-127, 500);
+		claw(-127, 800);
 		wait1Msec(100);
 		base(50, 50, 3000);
 		wait1Msec(200);
@@ -48,17 +51,15 @@ task autonomous()
 	case 1://Second Autonomous
 		clearLCDLine(0);
 		displayLCDCenteredString(0, "Auton 2 Selected");
-		lift(100, 700);
+		lift(100, 1150);
 		wait1Msec(100);
-		claw(-127, 600);
+		claw(-127, 800);
 		wait1Msec(100);
-		base(50, 50, 3000);
+		base(127, 127, 1300);
 		wait1Msec(200);
-		base(-100, -100, 250);
-		wait1Msec(500);
-		base(-127, -127, 500);
+		base(-127, -127, 700);
 		wait1Msec(100);
-		base(-127, 127, 400);
+		base(-127, 127, 500);
 		wait1Msec(100);
 		lift(-100, 1000);
 		wait1Msec(100);
@@ -67,32 +68,30 @@ task autonomous()
 		claw(127, 900);//holding
 		holding(50, 127, 700);
 		base(127, 127, 500);//new code
-		base(127, -127, 600);
+		base(127, -127, 550);
 		wait1Msec(100);
-		base(127, 127, 900);
+		base(127, 127, 1200);
 		wait1Msec(100);
 		claw(-127, 500);
 		wait1Msec(100);
 		base(-127, -127, 500);
 		wait1Msec(100);
-		lift(-100, 500);
+		lift(-100, 400);
 		claw(-127, 300);
 		base(127, 127, 1000);
 		break;
 	case 2://Third Autonomous
 		clearLCDLine(0);
 		displayLCDCenteredString(0, "Auton 3 Selected");
-		lift(100, 700);
+		lift(100, 1150);
 		wait1Msec(100);
-		claw(-127, 600);
+		claw(-127, 800);
 		wait1Msec(100);
-		base(50, 50, 3000);
+		base(127, 127, 1300);
 		wait1Msec(200);
-		base(-100, -100, 250);
-		wait1Msec(500);
-		base(-127, -127, 500);
+		base(-127, -127, 600);
 		wait1Msec(100);
-		base(127, -127, 400);
+		base(127, -127, 500);
 		wait1Msec(100);
 		lift(-100, 1000);
 		wait1Msec(100);
@@ -101,15 +100,15 @@ task autonomous()
 		claw(127, 900);//holding
 		holding(50, 127, 700);
 		base(127, 127, 500);//new code
-		base(-127, 127, 600);
+		base(-127, 127, 550);
 		wait1Msec(100);
-		base(127, 127, 900);
+		base(127, 127, 1200);
 		wait1Msec(100);
 		claw(-127, 500);
 		wait1Msec(100);
 		base(-127, -127, 500);
 		wait1Msec(100);
-		lift(-100, 500);
+		lift(-100, 400);
 		claw(-127, 300);
 		base(127, 127, 1000);
 		break;
@@ -117,80 +116,159 @@ task autonomous()
 		clearLCDLine(0);
 		displayLCDCenteredString(0, "Auton 4 Selected");
 		/*-------------------Encoder Testing Code----------------*/
-		while(SensorValue[liftLeft1Encoder] < 4*fullcycle)//
+		SensorValue[liftLeft1Encoder] = 0;
+		while(abs(SensorValue[liftLeft1Encoder]) < 2.2*fullcycle)//while lift encoder value is less than 2.2 fullcycle
 		{
 			liftEncoder(127);
 		}
-		claw(-127, 600);
+		liftEncoder(0);
+		claw(-127, 900);
 		while(SensorValue[leftBumper] == 0 || SensorValue[rightBumper] == 0)//if left bumper or right bumper are not press run the following loop
 		{
 			if(SensorValue[leftBumper] == 0 && SensorValue[rightBumper] == 0)//if both bumper are not press
 			{
-				motor[backLeft] = 127;//move forward full speed
-				motor[backRight] = 127;
-				motor[frontLeft] = 127;
-				motor[frontRight] = 127;
+				baseEncoder(127, 127);
 			}
 			else if(SensorValue[leftBumper] == 1 && SensorValue[rightBumper] == 0)//if left bumper is press
 			{
-				motor[backRight] = 127; //Makes right side of the base go at full power
-				motor[backLeft] = 0;
-				motor[frontLeft] = 0;
-				motor[frontRight] = 127;
+				baseEncoder(0, 127);
 			}
 			else if(SensorValue[leftBumper] == 0 && SensorValue[rightBumper] == 1)//if right bumper is press
 			{
-				motor[backLeft] = 127;//Makes left side of the base go at full speed
-				motor[backRight] = 0;
-				motor[frontLeft] = 127;
-				motor[frontRight] = 0;
+				baseEncoder(127, 0);
 			}
 			else//if nothing above happen
 			{
-				motor[backLeft] = 0;//disable all motors on base
-				motor[backRight] = 0;
-				motor[frontLeft] = 0;
-				motor[frontRight] = 0;
+				baseEncoder(0, 0);
 			}
 		}//end of the loop
+		baseEncoder(0, 0);
 		SensorValue[backLeftEncoder] = 0;//clear encoder value
-		while(SensorValue[backLeftEncoder] < 5*fullcycle)
+		while(abs(SensorValue[backLeftEncoder]) < 0.3*fullcycle)//while base encoder value is less than 5 fullcycle
 		{
-			baseEncoder(-127, -127);
+			baseEncoder(-127, -127);//move backwards
 		}
-		SensorValue[backLeftEncoder] = 0;
-		while(SensorValue[backLeftEncoder] < 3*fullcycle)
+		baseEncoder(0, 0);
+		SensorValue[backLeftEncoder] = 0;//clear encoder value
+		while(abs(SensorValue[backLeftEncoder]) < 3*fullcycle)//while base encoder value is less than 3 fullcycle
 		{
-			baseEncoder(-127, 127);
+			baseEncoder(-127, 127);//turn left
 		}
-		SensorValue[backLeftEncoder] = 0;
-		while(SensorValue[backLeftEncoder] < 4*fullcycle)
+		SensorValue[backLeftEncoder] = 0;//clear encoder value
+		while(abs(SensorValue[backLeftEncoder]) < 4*fullcycle)//while base encoder value is less than 4 fullcycle
 		{
-			baseEncoder(127, 127);
+			baseEncoder(127, 127);//move forward
 		}
-		SensorValue[liftLeft1Encoder] = 0;
-		while(SensorValue[liftLeft1Encoder] < 5*fullcycle)
+		SensorValue[liftLeft1Encoder] = 0;//clear encoder value
+		while(abs(SensorValue[liftLeft1Encoder]) < 5*fullcycle)//while lift encoder value is less than 5 fullcycle
 		{
-			holdingEncoder(127, 127);
+			holdingEncoder(127, 127);//collect the cube and lift at the same time
 		}
-		SensorValue[backLeftEncoder] = 0;
-		while(SensorValue[backLeftEncoder] < 3*fullcycle)
+		SensorValue[backLeftEncoder] = 0;//clear encoder value
+		while(abs(SensorValue[backLeftEncoder]) < 3*fullcycle)//while base encoder value is less than 3 fullcycle
 		{
-			baseEncoder(127, -127);
+			baseEncoder(127, -127);//turn right
 		}
-		SensorValue[backLeftEncoder] = 0;
-		while(SensorValue[backLeftEncoder] < 3*fullcycle)
+		SensorValue[backLeftEncoder] = 0;//clear encoder value
+		while(abs(SensorValue[backLeftEncoder]) < 3*fullcycle)//while base encoder value is less than 3 fullcycle
 		{
-			baseEncoder(127, 127);
+			baseEncoder(127, 127);//move forward
 		}
 		claw(-127, 700);//open the claw to drop the cube
 		break;
 	case 4://autonomous 5
 		clearLCDLine(0);
 		displayLCDCenteredString(0, "Auton 4 Selected");
-
-
+		SensorValue[liftLeft1Encoder] = 0;
+		while(abs(SensorValue[liftLeft1Encoder]) < 2.2*fullcycle)//while lift encoder value is less than 2.2 fullcycle
+		{
+			liftEncoder(127);
+		}
+		liftEncoder(0);
+		claw(-127, 900);
+		while(SensorValue[leftBumper] == 0 || SensorValue[rightBumper] == 0)//if left bumper or right bumper are not press run the following loop
+		{
+			if(SensorValue[leftBumper] == 0 && SensorValue[rightBumper] == 0)//if both bumper are not press
+			{
+				baseEncoder(127, 127);
+			}
+			else if(SensorValue[leftBumper] == 1 && SensorValue[rightBumper] == 0)//if left bumper is press
+			{
+				baseEncoder(0, 127);
+			}
+			else if(SensorValue[leftBumper] == 0 && SensorValue[rightBumper] == 1)//if right bumper is press
+			{
+				baseEncoder(127, 0);
+			}
+			else//if nothing above happen
+			{
+				baseEncoder(0, 0);
+			}
+		}//end of the loop
+		baseEncoder(0, 0);
+		SensorValue[backLeftEncoder] = 0;//clear encoder value
+		while(abs(SensorValue[backLeftEncoder]) < 0.3*fullcycle)//while base encoder value is less than 5 fullcycle
+		{
+			baseEncoder(-127, -127);//move backwards
+		}
+		baseEncoder(0, 0);
+		SensorValue[backLeftEncoder] = 0;//clear encoder value
+		while(abs(SensorValue[backLeftEncoder]) < 3*fullcycle)//while base encoder value is less than 3 fullcycle
+		{
+			baseEncoder(-127, 127);//turn left
+		}
+		SensorValue[backLeftEncoder] = 0;//clear encoder value
+		while(abs(SensorValue[backLeftEncoder]) < 4*fullcycle)//while base encoder value is less than 4 fullcycle
+		{
+			baseEncoder(127, 127);//move forward
+		}
+		SensorValue[liftLeft1Encoder] = 0;//clear encoder value
+		while(abs(SensorValue[liftLeft1Encoder]) < 5*fullcycle)//while lift encoder value is less than 5 fullcycle
+		{
+			holdingEncoder(127, 127);//collect the cube and lift at the same time
+		}
+		SensorValue[backLeftEncoder] = 0;//clear encoder value
+		while(abs(SensorValue[backLeftEncoder]) < 3*fullcycle)//while base encoder value is less than 3 fullcycle
+		{
+			baseEncoder(127, -127);//turn right
+		}
+		SensorValue[backLeftEncoder] = 0;//clear encoder value
+		while(abs(SensorValue[backLeftEncoder]) < 3*fullcycle)//while base encoder value is less than 3 fullcycle
+		{
+			baseEncoder(127, 127);//move forward
+		}
+		claw(-127, 700);//open the claw to drop the cube
 		break;
+	case 5:
+		clearLCDLine(0);
+		displayLCDCenteredString(0, "Auton 5 Selected");
+		SensorValue[liftLeft1Encoder] = 0;
+		while(abs(SensorValue[liftLeft1Encoder]) < 2.2*fullcycle)//while lift encoder value is less than 2.2 fullcycle
+		{
+			liftEncoder(127);
+		}
+		liftEncoder(0);
+		claw(-127, 900);
+		while(SensorValue[leftBumper] == 0 || SensorValue[rightBumper] == 0)//if left bumper or right bumper are not press run the following loop
+		{
+			if(SensorValue[leftBumper] == 0 && SensorValue[rightBumper] == 0)//if both bumper are not press
+			{
+				baseEncoder(127, 127);
+			}
+			else if(SensorValue[leftBumper] == 1 && SensorValue[rightBumper] == 0)//if left bumper is press
+			{
+				baseEncoder(0, 127);
+			}
+			else if(SensorValue[leftBumper] == 0 && SensorValue[rightBumper] == 1)//if right bumper is press
+			{
+				baseEncoder(127, 0);
+			}
+			else//if nothing above happen
+			{
+				baseEncoder(0, 0);
+			}
+		}//end of the loop
+		baseEncoder(0, 0);
 	}
 	AutonomousCodePlaceholderForTesting();
 }
@@ -236,12 +314,12 @@ task usercontrol()
 		//	motor[liftRight2] = threshold(vexRT[Ch3Xmtr2]);
 		//}
 		//collector
-		if(vexRT[Btn6UXmtr2] == 1)//if button 8U is pressed
+		if(vexRT[Btn6UXmtr2] == 1)//if button 6U is pressed
 		{
 			motor[collectorLeft] = 127;//open the claw
 			motor[collectorRight] = 127;
 		}
-		else if(vexRT[Btn6DXmtr2] == 1)//if button 8D is pressed
+		else if(vexRT[Btn6DXmtr2] == 1)//if button 6D is pressed
 		{
 			motor[collectorLeft] = -127;//close the claw
 			motor[collectorRight] = -127;
@@ -252,14 +330,16 @@ task usercontrol()
 			motor[collectorRight] = 0;
 		}
 		//base
-		//motor[backLeft] = vexRT[Ch3] + vexRT[Ch1];//Ch3: move all six motors on the base forward or backwards
-		//motor[backRight] = vexRT[Ch3] - vexRT[Ch1];//Ch1: make the base turn left or right
-		//motor[frontLeft] = vexRT[Ch3] + vexRT[Ch1];//Ch3/Ch1: one side disable, another side can still turn
-		//motor[frontRight] = vexRT[Ch3] - vexRT[Ch1];
-		motor[backLeft] = vexRT[Ch3];
-		motor[backRight] = vexRT[Ch2];
-		motor[frontLeft] = vexRT[Ch3];
-		motor[frontRight] = vexRT[Ch2];
+		//Gio's control
+		motor[backLeft] = vexRT[Ch3] + vexRT[Ch1];//Ch3: move all six motors on the base forward or backwards
+		motor[backRight] = vexRT[Ch3] - vexRT[Ch1];//Ch1: make the base turn left or right
+		motor[frontLeft] = vexRT[Ch3] + vexRT[Ch1];//Ch3 and Ch1: one side disable, another side can still turn
+		motor[frontRight] = vexRT[Ch3] - vexRT[Ch1];
+
+		//motor[backLeft] = vexRT[Ch3];
+		//motor[backRight] = vexRT[Ch2];
+		//motor[frontLeft] = vexRT[Ch3];
+		//motor[frontRight] = vexRT[Ch2];
 		UserControlCodePlaceholderForTesting();
 	}
 }

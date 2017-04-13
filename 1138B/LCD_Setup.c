@@ -118,7 +118,7 @@ void pre_auton()
 			break;
 		case 3:
 			//Display fourth choice
-			displayLCDCenteredString(0, "Encoder1");
+			displayLCDCenteredString(0, "Encoder Left");
 			displayLCDCenteredString(1, "<    Enter   >");
 			waitForPress();
 			//Increment or decrement "count" based on button press
@@ -139,7 +139,7 @@ void pre_auton()
 			}
 			break;
 		case 4:
-			displayLCDCenteredString(0, "Encoder2");
+			displayLCDCenteredString(0, "Encoder Right");
 			displayLCDCenteredString(1, "<    Enter   >");
 			waitForPress();
 			if(nLCDButtons == leftButton)
@@ -155,6 +155,25 @@ void pre_auton()
 			else if(nLCDButtons == centerButton)
 			{
 				autonNumber = 4;
+				startTask(autonomous);
+			}
+		case 5:
+			displayLCDCenteredString(0, "Encoder 3 stars");
+			displayLCDCenteredString(1, "<		Enter		>");
+			waitForPress();
+			if(nLCDButtons == leftButton)
+			{
+				waitForRelease();
+				count--;
+			}
+			else if(nLCDButtons == rightButton)
+			{
+				waitForRelease();
+				count = 0;
+			}
+			else if(nLCDButtons == centerButton)
+			{
+				autonNumber = 5;
 				startTask(autonomous);
 			}
 		default:
